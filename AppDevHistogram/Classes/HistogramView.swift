@@ -140,6 +140,7 @@ public class HistogramView: UIView {
             return
         }
 
+        let bezierPath = UIBezierPath()
         var previous: BarContainerView?
         for i in 0..<barCount {
             let barContainerView = BarContainerView()
@@ -148,6 +149,10 @@ public class HistogramView: UIView {
             let defaultBarColor = dataSource.defaultBarColor(for: self)
             let highlightedBarColor = dataSource.highlightedBarColor(for: self)
             barContainerView.configure(heightFactor: heightFactor, defaultColor: defaultBarColor, highlightedColor: highlightedBarColor)
+            
+            if let superview = superview {
+                bezierPath.move(to: CGPoint.init(x: (superview.bounds.width / CGFloat(barCount)) * CGFloat(i), y: superview.bounds.height * CGFloat(heightFactor)))
+            }
 
             addSubview(barContainerView)
             barContainerView.snp.makeConstraints { make in
@@ -164,6 +169,8 @@ public class HistogramView: UIView {
             barContainerViews.append(barContainerView)
             previous = barContainerView
         }
+        
+        bezierPath.close()
     }
 
     private func tearDownBars() {
